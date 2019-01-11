@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
+
 namespace Connecter
 {
     public enum ScaleType { RBS, Bizerba, Bilanciai };
@@ -59,10 +60,11 @@ namespace Connecter
         public void SendData()
         {
             if (this.CreateSocket()) {
+                byte[] data = new byte[10];
                 Console.WriteLine("Send data");
                 byte[] sendmsg = Encoding.ASCII.GetBytes("This is from Client\n");
-                int n = client.Send(sendmsg);
-                int m = client.Receive(data);
+                int n = ScaleSocket.Send(sendmsg);
+                int m = ScaleSocket.Receive(data);
                 this.CloseSocket();
                 }
             else Console.WriteLine("Doesn't create connection");
