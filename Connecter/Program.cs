@@ -10,6 +10,9 @@ namespace Connecter
     {
         static void Main(string[] args)
         {
+            Bilanciai scale1 = new Bilanciai("scale1", "192.168.1.36", ScaleType.Bizerba);
+            scale1.SendData();
+            Console.ReadKey();
         }
     }
 }
