@@ -11,7 +11,8 @@ namespace Connecter
         static void Main(string[] args)
         {
             Bilanciai scale1 = new Bilanciai("scale1", "192.168.1.36", ScaleType.Bizerba);
-            scale1.SendData();
+            scale1.SendData("test");
+            Connecter.ImportFile.ImortCSVFile("test.txt");
             Console.ReadKey();
         }
     }

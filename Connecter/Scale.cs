@@ -32,11 +32,38 @@ namespace Connecter
                 IPAddress ipAdress = System.Net.IPAddress.Parse(IP);
                 IPEndPoint ipEndpoint = new IPEndPoint(ipAdress, Port);
                 ScaleSocket = new Socket(ipAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                const string handshake = 
+@"<NET_LOGIN>
+<USR=Cigiemme>
+<PWD=Cigiemme>
+<BUF=2000>";
+                const string connoption = 
+@"<OPTION_CONNECTION>
+<TOTAL_CONTROL = FALSE>
+<ENABLE_TX_TOT_PLU = TRUE>
+<ENABLE_TX_ALL_CODEPAGE_NUMBERS = 1>
+<ENABLE_WRT_ARC_NOT_SM = TRUE>
+<ENABLE_TX_FINESTAMPA_PROD=TRUE>
+<ENABLE_FINESTAMPA_TOT_1 = TRUE>
+<END_OPTION_CONNECTION>";
+                const string sendmessagetoscale = 
+@"<SHOW_MESSAGE = MSG_OK>
+<S0 = dialog title>
+<S1 = text 1 line of the message>
+<S2 = text 2 line of the message>
+<END_SHOW_MESSAGE>";
+
 
                 try
                 {
                     ScaleSocket.Connect(ipEndpoint);
                     Console.WriteLine("Socket created to {0}", ScaleSocket.RemoteEndPoint.ToString());
+                    byte[] sendmsg = Encoding.ASCII.GetBytes(handshake);
+                    int n = ScaleSocket.Send(sendmsg);
+                    Console.WriteLine(n);
+                    sendmsg = Encoding.ASCII.GetBytes(connoption);
+                    n = ScaleSocket.Send(sendmsg);
+                    Console.WriteLine(n);
                     return true;
                 }
                 catch (Exception e)
@@ -57,17 +84,19 @@ namespace Connecter
             Console.WriteLine("Close socket");
         }
 
-        public void SendData()
+        public int SendData(string data)
         {
             if (this.CreateSocket()) {
-                byte[] data = new byte[10];
+                byte[] datar = new byte[2000];
                 Console.WriteLine("Send data");
-                byte[] sendmsg = Encoding.ASCII.GetBytes("This is from Client\n");
+                byte[] sendmsg = Encoding.ASCII.GetBytes(data);
                 int n = ScaleSocket.Send(sendmsg);
-                int m = ScaleSocket.Receive(data);
+                int m = ScaleSocket.Receive(datar);
                 this.CloseSocket();
+                return m;
                 }
             else Console.WriteLine("Doesn't create connection");
+            return 1;
         }
     }
 }
